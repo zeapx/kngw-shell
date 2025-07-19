@@ -1,17 +1,17 @@
 import app from "ags/gtk4/app";
+import { Astal, Gdk } from "ags/gtk4";
 
 import { ApplicationLauncher } from "./ApplicationLauncher";
 import { CurrentDate, CurrentTime } from "./Date";
-import { CurrentWindow } from "./CurrentWindow";
-import { Workspaces } from "./Workspaces";
+import { FocusedClient, Workspaces } from "./Hyprland";
 import { BatteryIndicator } from "./Battery";
 import { PowerMenu } from "./PowerMenu";
 import { AudioController } from "./AudioController";
-import { Astal, Gdk } from "ags/gtk4";
 import { NetworkManager } from "./NetworkManager";
 import { Notifications } from "./Notifications";
+import { SystemTray } from "./SystemTray";
 
-export default function Bar(gdkmonitor: Gdk.Monitor) {
+export default function Bar(monitor = 0) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 
   return (
@@ -19,7 +19,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
       visible
       name="bar"
       class="Bar"
-      gdkmonitor={gdkmonitor}
+      monitor={monitor}
       exclusivity={Astal.Exclusivity.EXCLUSIVE}
       anchor={TOP | LEFT | RIGHT}
       application={app}
@@ -29,12 +29,13 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           <ApplicationLauncher />
           <CurrentTime />
           <CurrentDate />
-          <CurrentWindow />
+          <FocusedClient />
         </box>
         <box $type="center">
           <Workspaces />
         </box>
         <box $type="end">
+          <SystemTray />
           <Notifications />
           <NetworkManager />
           <AudioController />
@@ -45,39 +46,3 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
     </window>
   );
 }
-
-// export default function Bar(gdkmonitor: Gdk.Monitor) {
-//   const time = createPoll("", 1000, "date");
-// const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
-
-//   return (
-//     <window
-//       visible
-//       name="bar"
-//       class="Bar"
-//       gdkmonitor={gdkmonitor}
-//       exclusivity={Astal.Exclusivity.EXCLUSIVE}
-//       anchor={TOP | LEFT | RIGHT}
-//       application={app}
-//     >
-//       <centerbox cssName="centerbox">
-//         <button
-//           $type="start"
-//           onClicked={() => execAsync("echo hello").then(console.log)}
-//           hexpand
-//           halign={Gtk.Align.CENTER}
-//         >
-//           <label label="Welcome to AGS!" />
-//         </button>
-//         <box $type="center" />
-//         <MyButton />
-//         <menubutton $type="end" hexpand halign={Gtk.Align.CENTER}>
-//           <label label={time} />
-//           <popover>
-//             <Gtk.Calendar />
-//           </popover>
-//         </menubutton>
-//       </centerbox>
-//     </window>
-//   );
-// }
