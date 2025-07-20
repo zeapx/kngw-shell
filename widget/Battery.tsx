@@ -22,8 +22,7 @@ export function BatteryIndicator() {
       const minutes = totalMinutes % 60;
       const pad = (n: number) => n.toString().padStart(2, "0");
 
-      const prefix = charging ? "Charging, " : "";
-
+      const prefix = charging ? "Charging: " : "";
       return `${prefix}${pad(hours)}:${pad(minutes)}h left`;
     },
   );

@@ -5,8 +5,9 @@ export function ApplicationLauncher() {
     <box class="module">
       <button
         tooltipText="Application Launcher"
-        onClicked={() => execAsync("anyrun")}>
-        <label label="" />
+        onClicked={() => execAsync("anyrun")}
+      >
+        <image iconName="preferences-desktop-apps-symbolic" />
       </button>
     </box>
   );

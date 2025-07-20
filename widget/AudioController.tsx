@@ -1,4 +1,4 @@
-import { createBinding } from "ags";
+import { createBinding, createComputed } from "ags";
 import { Gtk } from "ags/gtk4";
 import AstalWp from "gi://AstalWp?version=0.1";
 
@@ -8,13 +8,31 @@ const wp = AstalWp.get_default()!;
 
 const speaker = wp.audio.defaultSpeaker;
 const speakerIcon = createBinding(speaker, "volumeIcon");
+const speakerMuted = createBinding(speaker, "mute");
 const speakerVolume = createBinding(speaker, "volume");
 const speakerVolumeStr = speakerVolume.as((x) => ` ${Math.round(x * 100)}%`);
 
+const speakerTooltipText = createComputed(
+  [speakerVolumeStr, speakerMuted],
+  (speakerVolumeStr, speakerMuted) => {
+    const prefix = speakerMuted ? "Muted: " : "Volume: ";
+    return `${prefix}${speakerVolumeStr}`;
+  },
+);
+
 const microphone = wp.audio.defaultMicrophone;
 const micIcon = createBinding(microphone, "volumeIcon");
+const micMuted = createBinding(microphone, "mute");
 const micVolume = createBinding(microphone, "volume");
-const _micVolumeStr = micVolume.as((x) => ` ${Math.round(x * 100)}%`);
+const micVolumeStr = micVolume.as((x) => ` ${Math.round(x * 100)}%`);
+
+const micTooltipText = createComputed(
+  [micVolumeStr, micMuted],
+  (micVolumeStr, micMuted) => {
+    const prefix = micMuted ? "Muted: " : "Volume: ";
+    return `${prefix}${micVolumeStr}`;
+  },
+);
 
 type VolumeScrollerProps = {
   endpoint: AstalWp.Endpoint;
@@ -38,14 +56,20 @@ function VolumeScroller({ endpoint }: VolumeScrollerProps) {
 export function AudioController() {
   return (
     <box class="module">
-      <button onClicked={() => toggleMute(speaker)}>
+      <button
+        tooltipText={speakerTooltipText}
+        onClicked={() => toggleMute(speaker)}
+      >
         <box>
           <VolumeScroller endpoint={speaker} />
           <image iconName={speakerIcon} />
           <label label={speakerVolumeStr} />
         </box>
       </button>
-      <button onClicked={() => toggleMute(microphone)}>
+      <button
+        tooltipText={micTooltipText}
+        onClicked={() => toggleMute(microphone)}
+      >
         <box>
           <VolumeScroller endpoint={microphone} />
           <image iconName={micIcon} />

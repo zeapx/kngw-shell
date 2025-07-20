@@ -23,7 +23,7 @@ const dndIcon = createBinding(swaync, "dnd").as((x) =>
     ? "notifications-disabled-symbolic"
     : "preferences-system-notifications-symbolic",
 );
-const count = createBinding(swaync, "count").as((c) => " " + c.toString());
+const count = createBinding(swaync, "count").as((c) => c.toString());
 const tooltipText = createBinding(swaync, "count").as((c) => {
   var tooltipText = c.toString() + " notification";
   if (c != 1) {
