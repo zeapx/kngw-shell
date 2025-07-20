@@ -1,19 +1,22 @@
-import { Accessor, createBinding } from "ags";
+import { Accessor, createBinding, createComputed } from "ags";
 import AstalNetwork from "gi://AstalNetwork";
 
 const network = AstalNetwork.get_default();
 
-const wiredIconName = createBinding(network.wired, "iconName");
-const wiredConnectionId = createBinding(
-  network.wired?.device.activeConnection,
-  "id",
-);
+const wired = createBinding(network, "wired");
+const wifi = createBinding(network, "wifi");
 
-const wifiIconName = createBinding(network.wifi, "iconName");
-const wifiConnectionId = createBinding(network.wifi?.activeConnection, "id");
+const iconName = createComputed([wired, wifi], (wired, wifi) => {
+  return wired?.iconName || wifi?.iconName || "network-offline-symbolic";
+});
 
-const iconName = wiredIconName ?? wifiIconName;
-const activeId = wiredConnectionId ?? wifiConnectionId;
+const activeId = createComputed([wired, wifi], (wired, wifi) => {
+  return (
+    wired?.device?.activeConnection?.id ??
+    wifi?.activeConnection?.id ??
+    "Disconnected"
+  );
+});
 
 export function NetworkManager() {
   return (
