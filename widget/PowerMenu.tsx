@@ -6,7 +6,7 @@ export function PowerMenu() {
   const [reveal, setReveal] = createState(false);
 
   return (
-    <box class="module">
+    <box name="powermenu" class="module">
       <Gtk.EventControllerMotion
         onEnter={() => {
           setReveal(true);

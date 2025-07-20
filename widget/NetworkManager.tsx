@@ -20,7 +20,7 @@ const activeId = createComputed([wired, wifi], (wired, wifi) => {
 
 export function NetworkManager() {
   return (
-    <box class="module" tooltipText={activeId}>
+    <box name="network" class="module" tooltipText={activeId}>
       <image iconName={iconName} />
     </box>
   );

@@ -1,4 +1,4 @@
-import { createBinding } from "ags";
+import { createBinding, createComputed, For } from "ags";
 
 import AstalHyprland from "gi://AstalHyprland";
 
@@ -9,24 +9,60 @@ const FOCUSED_CLIENT_MAX_LENGTH = 40;
 
 const hyprland = AstalHyprland.get_default();
 
-function Workspace(id: number) {
-  const icon = WORKSPACE_ICONS[id];
-  const workspaceId = id + 1;
+class Workspace {
+  id: number;
+  active: boolean;
+  focused: boolean;
 
-  return (
-    <button
-      tooltipText={"Workspace " + workspaceId.toString()}
-      onClicked={() => hyprland.dispatch("workspace", workspaceId.toString())}
-    >
-      <label label={icon} />
-    </button>
-  );
+  constructor(id: number, active: boolean, focused: boolean) {
+    this.id = id;
+    this.active = active;
+    this.focused = focused;
+  }
+
+  widget() {
+    const icon = WORKSPACE_ICONS[this.id - 1];
+    const workspaceId = this.id;
+
+    const active = this.active ? "active" : "inactive";
+    const focused = this.focused ? "focused" : "unfocused";
+    const cssClass = active + " " + focused;
+
+    return (
+      <button
+        class={cssClass}
+        tooltipText={"Workspace " + workspaceId.toString()}
+        onClicked={() => hyprland.dispatch("workspace", workspaceId.toString())}
+      >
+        <label label={icon} />
+      </button>
+    );
+  }
 }
 
 export function Workspaces() {
+  const activeWorkspaces = createBinding(hyprland, "workspaces");
+  const focusedWorkspace = createBinding(hyprland, "focusedWorkspace");
+
+  const workspaces = createComputed(
+    [activeWorkspaces, focusedWorkspace],
+    (actives, focused) => {
+      const activeIds = actives?.map((w) => w.id) ?? [];
+      const focusedId = focused?.id ?? -1;
+
+      return Array.from({ length: NUM_WORKSPACES }, (_, i) => {
+        const id = i + 1;
+        const active = activeIds.includes(id);
+        const isFocused = focusedId === id;
+
+        return new Workspace(id, active, isFocused);
+      });
+    },
+  );
+
   return (
-    <box class="module">
-      {[...Array(NUM_WORKSPACES).keys()].map((x) => Workspace(x))}
+    <box name="workspaces" class="module">
+      <For each={workspaces}>{(workspace) => workspace.widget()}</For>
     </box>
   );
 }

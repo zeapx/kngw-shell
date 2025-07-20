@@ -34,7 +34,9 @@ const tooltipText = createBinding(swaync, "count").as((c) => {
 
 export function Notifications() {
   return (
-    <box tooltipText={tooltipText} class="module">
+    <box name="notifications" class="module"
+      tooltipText={tooltipText} 
+    >
       <button onClicked={() => execAsync("swaync-client --toggle-panel")}>
         <box>
           <image iconName={dndIcon} />

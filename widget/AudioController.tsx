@@ -55,7 +55,7 @@ function VolumeScroller({ endpoint }: VolumeScrollerProps) {
 
 export function AudioController() {
   return (
-    <box class="module">
+    <box name="audio" class="module">
       <button
         tooltipText={speakerTooltipText}
         onClicked={() => toggleMute(speaker)}
