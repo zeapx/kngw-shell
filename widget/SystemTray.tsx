@@ -1,21 +1,22 @@
-import { createBinding } from "ags";
+import { createBinding, For } from "ags";
 
 import AstalTray from "gi://AstalTray";
 
 const tray = AstalTray.get_default();
 
-function SystemTrayItem(item) {
-  return (
-    <button>
-      <label label={item.name} />
-    </button>
-  );
-}
+const items = createBinding(tray, "items");
 
 export function SystemTray() {
-  const items = createBinding(tray, "items").as((items) =>
-    items.map((item) => SystemTrayItem(item)),
+  return (
+    <box class="module">
+      <For each={items}>
+        {(item) => (
+          <button
+           tooltipText={item.title}>
+            <image iconName={item.iconName} />
+          </button>
+        )}
+      </For>
+    </box>
   );
-
-  return <box class="module">{items.get()}</box>;
 }

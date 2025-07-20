@@ -35,7 +35,7 @@ export function FocusedClient() {
   );
 
   return (
-    <box class="module">
+    <box class="module" tooltipText="Focused Client">
       <button onClicked={(self) => hyprland.focusedClient.focus()}>
         <label label={focusedClient} />
       </button>

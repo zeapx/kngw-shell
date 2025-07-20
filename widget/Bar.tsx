@@ -1,15 +1,15 @@
 import app from "ags/gtk4/app";
-import { Astal, Gdk } from "ags/gtk4";
+import { Astal } from "ags/gtk4";
 
 import { ApplicationLauncher } from "./ApplicationLauncher";
 import { CurrentDate, CurrentTime } from "./Date";
 import { FocusedClient, Workspaces } from "./Hyprland";
-import { BatteryIndicator } from "./Battery";
+import { BatteryIndicator, battery } from "./Battery";
 import { PowerMenu } from "./PowerMenu";
 import { AudioController } from "./AudioController";
-import { NetworkManager } from "./NetworkManager";
 import { Notifications } from "./Notifications";
 import { SystemTray } from "./SystemTray";
+import { NetworkManager } from "./NetworkManager";
 
 export default function Bar(monitor = 0) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
@@ -39,7 +39,7 @@ export default function Bar(monitor = 0) {
           <Notifications />
           <NetworkManager />
           <AudioController />
-          <BatteryIndicator />
+          {battery.isBattery && <BatteryIndicator />}
           <PowerMenu />
         </box>
       </centerbox>

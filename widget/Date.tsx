@@ -12,7 +12,8 @@ const weekday = createPoll("", 1000, "date +%w", (stdout, _prev) => {
 
 export function CurrentTime() {
   return (
-    <box class="module">
+    <box class="module"
+     tooltipText="Current Time">
       <label label={time} />
     </box>
   );
@@ -20,7 +21,8 @@ export function CurrentTime() {
 
 export function CurrentDate() {
   return (
-    <box class="module">
+    <box class="module"
+      tooltipText="Current Date">
       <label label={monthAndDay} />
       <label label={weekday} />
     </box>
