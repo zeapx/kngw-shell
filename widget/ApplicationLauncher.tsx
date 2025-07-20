@@ -3,7 +3,9 @@ import { execAsync } from "ags/process";
 export function ApplicationLauncher() {
   return (
     <box class="module">
-      <button onClicked={() => execAsync("anyrun")}>
+      <button
+        tooltipText="Application Launcher"
+        onClicked={() => execAsync("anyrun")}>
         <label label="" />
       </button>
     </box>

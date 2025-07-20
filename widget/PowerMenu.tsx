@@ -20,23 +20,33 @@ export function PowerMenu() {
         transitionType={Gtk.RevealerTransitionType.SLIDE_LEFT}
       >
         <box>
-          <button onClicked={() => exec("hyprctl dispatch exec hyprlock")}>
-            <label label="Lock" />
+          <button
+            tooltipText="Lock"
+            onClicked={() => exec("hyprctl dispatch exec hyprlock")}
+          >
+            <image iconName="system-lock-screen-symbolic" />
           </button>
           <button
+            tooltipText="Suspend"
             onClicked={() =>
               exec(["hyprctl dispatch exec hyprlock", "systemctl suspend"])
             }
           >
-            <label label="Suspend" />
+            <image iconName="weather-clear-night-symbolic" />
           </button>
-          <button onClicked={() => exec("systemctl reboot")}>
-            <label label="Reboot" />
+          <button
+            tooltipText="Reboot"
+            onClicked={() => exec("systemctl reboot")}
+          >
+            <image iconName="system-reboot-symbolic" />
           </button>
         </box>
       </revealer>
-      <button onClicked={() => exec("systemctl poweroff")}>
-        <label label="Poweroff" />
+      <button
+        tooltipText="Poweroff"
+        onClicked={() => exec("systemctl poweroff")}
+      >
+        <image iconName="system-shutdown-symbolic" />
       </button>
     </box>
   );

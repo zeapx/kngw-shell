@@ -13,6 +13,7 @@ function Workspace(id: number) {
 
   return (
     <button
+      tooltipText={"Workspace " + workspaceId.toString()}
       onClicked={() => hyprland.dispatch("workspace", workspaceId.toString())}
     >
       <label label={icon} />

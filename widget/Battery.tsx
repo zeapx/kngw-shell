@@ -1,4 +1,4 @@
-import { createBinding } from "ags";
+import { createBinding, createComputed } from "ags";
 import Battery from "gi://AstalBattery";
 
 const battery = Battery.get_default();
@@ -13,8 +13,27 @@ export function BatteryIndicator() {
     (n) => ` ${Math.round(n * 100)}%`,
   );
 
+  const charging = createBinding(battery, "charging");
+  const timeToFull = createBinding(battery, "timeToFull");
+  const timeToEmpty = createBinding(battery, "timeToEmpty");
+
+  const tooltipText = createComputed(
+    [charging, timeToFull, timeToEmpty],
+    (charging, timeToFull, timeToEmpty) => {
+      const seconds = charging ? battery.timeToFull : battery.timeToEmpty;
+      const totalMinutes = Math.floor(seconds / 60);
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const pad = (n: number) => n.toString().padStart(2, "0");
+
+      const prefix = charging ? "Charging, " : "";
+
+      return `${prefix}${pad(hours)}:${pad(minutes)}h left`;
+    },
+  );
+
   return (
-    <box class="module" visible={hasBattery}>
+    <box class="module" tooltipText={tooltipText}>
       <image iconName={icon} />
       <label label={label} />
     </box>

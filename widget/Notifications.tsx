@@ -24,10 +24,17 @@ const dndIcon = createBinding(swaync, "dnd").as((x) =>
     : "preferences-system-notifications-symbolic",
 );
 const count = createBinding(swaync, "count").as((c) => " " + c.toString());
+const tooltipText = createBinding(swaync, "count").as((c) => {
+  var tooltipText = c.toString() + " notification";
+  if (c != 1) {
+    tooltipText += "s";
+  }
+  return tooltipText;
+});
 
 export function Notifications() {
   return (
-    <box class="module">
+    <box tooltipText={tooltipText} class="module">
       <button onClicked={() => execAsync("swaync-client --toggle-panel")}>
         <box>
           <image iconName={dndIcon} />
