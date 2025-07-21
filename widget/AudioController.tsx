@@ -1,8 +1,9 @@
-import { createBinding, createComputed } from "ags";
+import { createBinding, createComputed, createState } from "ags";
 import { Gtk } from "ags/gtk4";
 import AstalWp from "gi://AstalWp?version=0.1";
 
 const SCROLL_STEP = 0.01;
+const REVEAL_DURATION_MS = 1000;
 
 const wp = AstalWp.get_default()!;
 
@@ -35,10 +36,11 @@ const micTooltipText = createComputed(
 );
 
 type VolumeScrollerProps = {
+  onScroll?: () => void;
   endpoint: AstalWp.Endpoint;
 };
 
-function VolumeScroller({ endpoint }: VolumeScrollerProps) {
+function VolumeScroller({ onScroll, endpoint }: VolumeScrollerProps) {
   const { VERTICAL } = Gtk.EventControllerScrollFlags;
 
   return (
@@ -48,12 +50,18 @@ function VolumeScroller({ endpoint }: VolumeScrollerProps) {
         const volumeChange = dy < 0 ? SCROLL_STEP : -SCROLL_STEP;
         endpoint?.set_volume(endpoint.volume + volumeChange);
         endpoint?.set_mute(false);
+        onScroll?.();
       }}
     />
   );
 }
 
 export function AudioController() {
+  const { SLIDE_LEFT: SLIDE_RIGHT } = Gtk.RevealerTransitionType;
+
+  const [reveal, setReveal] = createState(false);
+  let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+
   return (
     <box name="audio" class="module">
       <button
@@ -71,8 +79,26 @@ export function AudioController() {
         onClicked={() => toggleMute(microphone)}
       >
         <box>
-          <VolumeScroller endpoint={microphone} />
+          {/* <Gtk.EventControllerMotion
+            onEnter={() => setReveal(true)}
+            onLeave={() => setReveal(false)}
+          /> */}
+          <VolumeScroller
+            onScroll={() => {
+              if (scrollTimeout) clearTimeout(scrollTimeout);
+
+              setReveal(true);
+
+              scrollTimeout = setTimeout(() => {
+                setReveal(false);
+              }, REVEAL_DURATION_MS);
+            }}
+            endpoint={microphone}
+          />
           <image iconName={micIcon} />
+          <revealer revealChild={reveal} transitionType={SLIDE_RIGHT}>
+            <label label={micVolumeStr} />
+          </revealer>
         </box>
       </button>
     </box>

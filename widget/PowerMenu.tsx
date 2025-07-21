@@ -3,22 +3,17 @@ import { exec } from "ags/process";
 import Gtk from "gi://Gtk";
 
 export function PowerMenu() {
+  const { SLIDE_LEFT } = Gtk.RevealerTransitionType;
+
   const [reveal, setReveal] = createState(false);
 
   return (
     <box name="powermenu" class="module">
       <Gtk.EventControllerMotion
-        onEnter={() => {
-          setReveal(true);
-        }}
-        onLeave={() => {
-          setReveal(false);
-        }}
+        onEnter={() => setReveal(true)}
+        onLeave={() => setReveal(false)}
       />
-      <revealer
-        revealChild={reveal}
-        transitionType={Gtk.RevealerTransitionType.SLIDE_LEFT}
-      >
+      <revealer revealChild={reveal} transitionType={SLIDE_LEFT}>
         <box>
           <button
             tooltipText="Lock"
