@@ -13,6 +13,15 @@ export function SystemTray() {
       <For each={items}>
         {(item) => (
           <menubutton tooltipText={item.title}>
+            <Gtk.GestureClick
+              button={3}
+              onPressed={(gesture) => {
+                const widget = gesture.get_widget() as Gtk.MenuButton;
+                if (widget && "popup" in widget) {
+                  widget.popup();
+                }
+              }}
+            />
             <image gicon={item.gicon} />
             {TrayItemMenu(item)}
           </menubutton>
