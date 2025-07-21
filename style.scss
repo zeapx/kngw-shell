@@ -23,18 +23,26 @@ window.Bar {
         padding: 0 5px;
     }
 
+    @mixin workspace-colors($monitor-class, $color) {
+        .#{$monitor-class} {
+            &.active {
+                color: color.change($color, $alpha: 0.5);
+            }
+            &.focused {
+                color: $color;
+            }
+        }
+    }
+
     #workspaces {
         .inactive {
             color: color.adjust($fg, $alpha: -0.8);
         }
 
-        .active {
-            color: color.adjust($red, $alpha: -0.5);
-        }
-
-        .focused {
-            color: $red;
-        }
+        @include workspace-colors("monitor-0", $red);
+        @include workspace-colors("monitor-1", $green);
+        @include workspace-colors("monitor-2", $blue);
+        @include workspace-colors("monitor-3", $yellow);
     }
 
     #launcher,

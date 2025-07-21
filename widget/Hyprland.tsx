@@ -13,38 +13,43 @@ const hyprland = AstalHyprland.get_default();
 
 class Workspace {
   id: number;
+  monitor: number | null;
   active: boolean;
   focused: boolean;
 
-  constructor(id: number, active: boolean, focused: boolean) {
+  constructor(
+    id: number,
+    monitor: number | null,
+    active: boolean,
+    focused: boolean,
+  ) {
     this.id = id;
+    this.monitor = monitor;
     this.active = active;
     this.focused = focused;
   }
 
   widget() {
     const icon = WORKSPACE_ICONS[this.id - 1];
-    const workspaceId = this.id;
+    const workspaceId = this.id.toString();
 
+    const monitor = `monitor-${this.monitor?.toString() ?? "undefined"}`;
     const active = this.active ? "active" : "inactive";
     const focused = this.focused ? "focused" : "unfocused";
-    const cssClass = active + " " + focused;
+
+    const cssClass = `${monitor} ${active} ${focused}`;
 
     return (
-      <box>
+      <box
+        name={workspaceId}
+        class={cssClass}
+        tooltipText={"Workspace " + workspaceId}
+      >
         <Gtk.GestureClick
           button={3}
-          onPressed={() =>
-            hyprland.dispatch("movetoworkspace", workspaceId.toString())
-          }
+          onPressed={() => hyprland.dispatch("movetoworkspace", workspaceId)}
         />
-        <button
-          class={cssClass}
-          tooltipText={"Workspace " + workspaceId.toString()}
-          onClicked={() =>
-            hyprland.dispatch("workspace", workspaceId.toString())
-          }
-        >
+        <button onClicked={() => hyprland.dispatch("workspace", workspaceId)}>
           <label label={icon} />
         </button>
       </box>
@@ -59,15 +64,18 @@ export function Workspaces() {
   const workspaces = createComputed(
     [activeWorkspaces, focusedWorkspace],
     (actives, focused) => {
-      const activeIds = actives?.map((w) => w.id) ?? [];
       const focusedId = focused?.id ?? -1;
 
       return Array.from({ length: NUM_WORKSPACES }, (_, i) => {
         const id = i + 1;
-        const active = activeIds.includes(id);
+
+        const activeWorkspace = actives?.find((w) => w.id === id);
+        const monitor = activeWorkspace?.monitor.id ?? null;
+
+        const active = !!activeWorkspace;
         const isFocused = focusedId === id;
 
-        return new Workspace(id, active, isFocused);
+        return new Workspace(id, monitor, active, isFocused);
       });
     },
   );
