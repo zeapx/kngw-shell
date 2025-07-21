@@ -15,8 +15,13 @@ const weekday = createPoll("", 1000, "date +%w", (stdout, _prev) => {
 export function CurrentTime() {
   return (
     <box name="clock" class="module" tooltipText="Current Time">
-      <image iconName="preferences-system-time-symbolic" pixelSize={ICON_SIZE} />
-      <label label={time} />
+      <button>
+        <image
+          iconName="preferences-system-time-symbolic"
+          pixelSize={ICON_SIZE}
+        />
+        <label label={time} />
+      </button>
     </box>
   );
 }
