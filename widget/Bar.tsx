@@ -25,6 +25,7 @@ export default function Bar(monitor = 0) {
       exclusivity={Astal.Exclusivity.EXCLUSIVE}
       anchor={TOP | LEFT | RIGHT}
       application={app}
+      namespace="kngw-shell"
     >
       <centerbox cssName="centerbox">
         <box $type="start">
