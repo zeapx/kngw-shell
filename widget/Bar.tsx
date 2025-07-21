@@ -11,6 +11,8 @@ import { Notifications } from "./Notifications";
 import { SystemTray } from "./SystemTray";
 import { NetworkManager } from "./NetworkManager";
 
+export const ICON_SIZE = 15;
+
 export default function Bar(monitor = 0) {
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 

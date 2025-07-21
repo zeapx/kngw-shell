@@ -2,6 +2,7 @@ import { createBinding, For } from "ags";
 import { Gtk } from "ags/gtk4";
 
 import AstalTray from "gi://AstalTray";
+import { ICON_SIZE } from "./Bar";
 
 const tray = AstalTray.get_default();
 
@@ -22,7 +23,7 @@ export function SystemTray() {
                 }
               }}
             />
-            <image gicon={item.gicon} />
+            <image gicon={item.gicon} pixelSize={ICON_SIZE} />
             {TrayItemMenu(item)}
           </menubutton>
         )}

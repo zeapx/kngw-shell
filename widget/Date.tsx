@@ -1,5 +1,6 @@
 import { Gtk } from "ags/gtk4";
 import { createPoll, interval } from "ags/time";
+import { ICON_SIZE } from "./Bar";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -14,7 +15,7 @@ const weekday = createPoll("", 1000, "date +%w", (stdout, _prev) => {
 export function CurrentTime() {
   return (
     <box name="clock" class="module" tooltipText="Current Time">
-      <image iconName="preferences-system-time-symbolic" />
+      <image iconName="preferences-system-time-symbolic" pixelSize={ICON_SIZE} />
       <label label={time} />
     </box>
   );

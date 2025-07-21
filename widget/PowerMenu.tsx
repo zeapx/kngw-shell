@@ -1,6 +1,7 @@
 import { createState } from "ags";
 import { exec } from "ags/process";
 import Gtk from "gi://Gtk";
+import { ICON_SIZE } from "./Bar";
 
 export function PowerMenu() {
   const { SLIDE_LEFT } = Gtk.RevealerTransitionType;
@@ -19,7 +20,10 @@ export function PowerMenu() {
             tooltipText="Lock"
             onClicked={() => exec("hyprctl dispatch exec hyprlock")}
           >
-            <image iconName="system-lock-screen-symbolic" />
+            <image
+              iconName="system-lock-screen-symbolic"
+              pixelSize={ICON_SIZE}
+            />
           </button>
           <button
             tooltipText="Suspend"
@@ -27,13 +31,16 @@ export function PowerMenu() {
               exec(["hyprctl dispatch exec hyprlock", "systemctl suspend"])
             }
           >
-            <image iconName="weather-clear-night-symbolic" />
+            <image
+              iconName="weather-clear-night-symbolic"
+              pixelSize={ICON_SIZE}
+            />
           </button>
           <button
             tooltipText="Reboot"
             onClicked={() => exec("systemctl reboot")}
           >
-            <image iconName="system-reboot-symbolic" />
+            <image iconName="system-reboot-symbolic" pixelSize={ICON_SIZE} />
           </button>
         </box>
       </revealer>
@@ -41,7 +48,7 @@ export function PowerMenu() {
         tooltipText="Poweroff"
         onClicked={() => exec("systemctl poweroff")}
       >
-        <image iconName="system-shutdown-symbolic" />
+        <image iconName="system-shutdown-symbolic" pixelSize={ICON_SIZE} />
       </button>
     </box>
   );

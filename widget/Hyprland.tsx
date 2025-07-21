@@ -3,6 +3,7 @@ import { Gdk, Gtk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 
 import AstalHyprland from "gi://AstalHyprland";
+import { ICON_SIZE } from "./Bar";
 
 const NUM_WORKSPACES = 6;
 const WORKSPACE_ICONS = ["一", "二", "三", "四", "五", "六"];
@@ -108,7 +109,7 @@ export function FocusedClient() {
       />
       <button onClicked={(self) => hyprland.focusedClient.focus()}>
         <box>
-          <image iconName={appIcon} />
+          <image iconName={appIcon} pixelSize={ICON_SIZE} />
           <label label={focusedClientStr} />
         </box>
       </button>
@@ -123,7 +124,7 @@ function resolveAppIcon(client: AstalHyprland.Client) {
   if (!rawClass) return "application-x-executable-symbolic";
 
   const baseName = rawClass.toLowerCase().split(".").pop()!;
-  const iconCandidates = [rawClass, baseName];
+  const iconCandidates = [rawClass, baseName, `${baseName}-client`];
 
   const theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!);
   for (const name of iconCandidates) {

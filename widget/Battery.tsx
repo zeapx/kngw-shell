@@ -1,5 +1,6 @@
 import { createBinding, createComputed } from "ags";
 import Battery from "gi://AstalBattery";
+import { ICON_SIZE } from "./Bar";
 
 export const battery = Battery.get_default();
 
@@ -29,7 +30,7 @@ export function BatteryIndicator() {
 
   return (
     <box class="module" tooltipText={tooltipText}>
-      <image iconName={icon} />
+      <image iconName={icon} pixelSize={ICON_SIZE} />
       <label label={label} />
     </box>
   );

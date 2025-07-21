@@ -2,6 +2,7 @@ import { createBinding, createComputed, createState } from "ags";
 import { Gtk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 import AstalWp from "gi://AstalWp?version=0.1";
+import { ICON_SIZE } from "./Bar";
 
 const SCROLL_STEP = 0.01;
 const REVEAL_DURATION_MS = 1000;
@@ -72,7 +73,7 @@ export function AudioController() {
       >
         <box>
           <VolumeScroller endpoint={speaker} />
-          <image iconName={speakerIcon} />
+          <image iconName={speakerIcon} pixelSize={ICON_SIZE} />
           <label label={speakerVolumeStr} />
         </box>
       </button>
@@ -93,7 +94,7 @@ export function AudioController() {
             }}
             endpoint={microphone}
           />
-          <image iconName={micIcon} />
+          <image iconName={micIcon} pixelSize={ICON_SIZE} />
           <revealer revealChild={reveal} transitionType={SLIDE_RIGHT}>
             <label label={micVolumeStr} />
           </revealer>

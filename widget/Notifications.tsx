@@ -2,6 +2,7 @@ import { createBinding } from "ags";
 import GObject, { property, register } from "ags/gobject";
 import { Gtk } from "ags/gtk4";
 import { execAsync, subprocess } from "ags/process";
+import { ICON_SIZE } from "./Bar";
 
 @register()
 class Swaync extends GObject.Object {
@@ -41,7 +42,7 @@ export function Notifications() {
       />
       <button onClicked={() => execAsync("swaync-client --toggle-panel")}>
         <box>
-          <image iconName={dndIcon} />
+          <image iconName={dndIcon} pixelSize={ICON_SIZE} />
           <label label={count} />
         </box>
       </button>
