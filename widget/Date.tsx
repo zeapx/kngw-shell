@@ -1,3 +1,4 @@
+import { Gtk } from "ags/gtk4";
 import { createPoll, interval } from "ags/time";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
@@ -22,8 +23,15 @@ export function CurrentTime() {
 export function CurrentDate() {
   return (
     <box class="module" tooltipText="Current Date">
-      <label name="date" label={monthAndDay} />
-      <label name="weekday" label={weekday} />
+      <menubutton>
+        <box>
+          <label name="date" label={monthAndDay} />
+          <label name="weekday" label={weekday} />
+        </box>
+        <popover>
+          <Gtk.Calendar />
+        </popover>
+      </menubutton>
     </box>
   );
 }

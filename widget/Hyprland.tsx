@@ -1,4 +1,6 @@
 import { createBinding, createComputed, For } from "ags";
+import { Gtk } from "ags/gtk4";
+import { execAsync } from "ags/process";
 
 import AstalHyprland from "gi://AstalHyprland";
 
@@ -29,13 +31,23 @@ class Workspace {
     const cssClass = active + " " + focused;
 
     return (
-      <button
-        class={cssClass}
-        tooltipText={"Workspace " + workspaceId.toString()}
-        onClicked={() => hyprland.dispatch("workspace", workspaceId.toString())}
-      >
-        <label label={icon} />
-      </button>
+      <box>
+        <Gtk.GestureClick
+          button={3}
+          onPressed={() =>
+            hyprland.dispatch("movetoworkspace", workspaceId.toString())
+          }
+        />
+        <button
+          class={cssClass}
+          tooltipText={"Workspace " + workspaceId.toString()}
+          onClicked={() =>
+            hyprland.dispatch("workspace", workspaceId.toString())
+          }
+        >
+          <label label={icon} />
+        </button>
+      </box>
     );
   }
 }
@@ -77,6 +89,10 @@ export function FocusedClient() {
 
   return (
     <box class="module" tooltipText="Focused Client">
+      <Gtk.GestureClick
+        button={3}
+        onPressed={() => hyprland.dispatch("killactive", "")}
+      />
       <button onClicked={(self) => hyprland.focusedClient.focus()}>
         <label label={focusedClient} />
       </button>

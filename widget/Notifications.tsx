@@ -1,7 +1,7 @@
 import { createBinding } from "ags";
 import GObject, { property, register } from "ags/gobject";
 import { Gtk } from "ags/gtk4";
-import { createSubprocess, execAsync, subprocess } from "ags/process";
+import { execAsync, subprocess } from "ags/process";
 
 @register()
 class Swaync extends GObject.Object {
@@ -18,8 +18,8 @@ swayncHandle.connect("stdout", (_, out) => {
   swaync.count = data.count;
 });
 
-const dndIcon = createBinding(swaync, "dnd").as((x) =>
-  x
+const dndIcon = createBinding(swaync, "dnd").as((dnd) =>
+  dnd
     ? "notifications-disabled-symbolic"
     : "preferences-system-notifications-symbolic",
 );
@@ -34,9 +34,11 @@ const tooltipText = createBinding(swaync, "count").as((c) => {
 
 export function Notifications() {
   return (
-    <box name="notifications" class="module"
-      tooltipText={tooltipText} 
-    >
+    <box name="notifications" class="module" tooltipText={tooltipText}>
+      <Gtk.GestureClick
+        button={3}
+        onPressed={() => execAsync("swaync-client --toggle-dnd")}
+      />
       <button onClicked={() => execAsync("swaync-client --toggle-panel")}>
         <box>
           <image iconName={dndIcon} />

@@ -1,5 +1,6 @@
 import { createBinding, createComputed, createState } from "ags";
 import { Gtk } from "ags/gtk4";
+import { execAsync } from "ags/process";
 import AstalWp from "gi://AstalWp?version=0.1";
 
 const SCROLL_STEP = 0.01;
@@ -64,6 +65,7 @@ export function AudioController() {
 
   return (
     <box name="audio" class="module">
+      <Gtk.GestureClick button={3} onPressed={() => execAsync("pavucontrol")} />
       <button
         tooltipText={speakerTooltipText}
         onClicked={() => toggleMute(speaker)}
@@ -79,10 +81,6 @@ export function AudioController() {
         onClicked={() => toggleMute(microphone)}
       >
         <box>
-          {/* <Gtk.EventControllerMotion
-            onEnter={() => setReveal(true)}
-            onLeave={() => setReveal(false)}
-          /> */}
           <VolumeScroller
             onScroll={() => {
               if (scrollTimeout) clearTimeout(scrollTimeout);
