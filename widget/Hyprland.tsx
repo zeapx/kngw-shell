@@ -1,5 +1,5 @@
 import { createBinding, createComputed, For } from "ags";
-import { Gtk } from "ags/gtk4";
+import { Gdk, Gtk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 
 import AstalHyprland from "gi://AstalHyprland";
@@ -88,11 +88,16 @@ export function Workspaces() {
 }
 
 export function FocusedClient() {
-  const focusedClient = createBinding(hyprland, "focusedClient").as((x) => {
-    const title = x?.title ?? "";
+  const focusedClient = createBinding(hyprland, "focusedClient");
+  const focusedClientStr = focusedClient.as((client) => {
+    const title = client?.title ?? "";
     return title.length > FOCUSED_CLIENT_MAX_LENGTH
       ? title.slice(0, FOCUSED_CLIENT_MAX_LENGTH) + "…"
       : title;
+  });
+
+  const appIcon = focusedClient.as((client) => {
+    return resolveAppIcon(client);
   });
 
   return (
@@ -102,8 +107,28 @@ export function FocusedClient() {
         onPressed={() => hyprland.dispatch("killactive", "")}
       />
       <button onClicked={(self) => hyprland.focusedClient.focus()}>
-        <label label={focusedClient} />
+        <box>
+          <image iconName={appIcon} />
+          <label label={focusedClientStr} />
+        </box>
       </button>
     </box>
   );
+}
+
+function resolveAppIcon(client: AstalHyprland.Client) {
+  if (!client) return "application-x-executable-symbolic";
+
+  const rawClass = client.initialClass || client.class || "";
+  if (!rawClass) return "application-x-executable-symbolic";
+
+  const baseName = rawClass.toLowerCase().split(".").pop()!;
+  const iconCandidates = [rawClass, baseName];
+
+  const theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default()!);
+  for (const name of iconCandidates) {
+    if (theme.has_icon(name)) return name;
+  }
+
+  return "application-x-executable-symbolic";
 }
