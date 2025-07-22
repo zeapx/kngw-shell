@@ -1,4 +1,4 @@
-import { createBinding, createComputed, For } from "ags";
+import { createBinding, createComputed, createState, For } from "ags";
 import { Gdk, Gtk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 
@@ -89,27 +89,42 @@ export function Workspaces() {
 }
 
 export function FocusedClient() {
+  const [focusedTitle, setFocusedTitle] = createState("");
+
+  hyprland.connect("event", (_, event, data) => {
+    if (event === "activewindow") {
+      hyprland.notify("focused-client");
+
+      const [_windowClass, title] = data.split(",");
+      setFocusedTitle(title);
+    }
+  });
+
   const focusedClient = createBinding(hyprland, "focusedClient");
-  const focusedClientStr = focusedClient.as((client) => {
-    const title = client?.title ?? "";
+  const focusedClientTitle = focusedTitle.as((title) => {
     return title.length > FOCUSED_CLIENT_MAX_LENGTH
       ? title.slice(0, FOCUSED_CLIENT_MAX_LENGTH) + "…"
       : title;
   });
 
+  const visible = focusedTitle.as((title) => title != "");
   const appIcon = focusedClient.as((client) => resolveAppIcon(client));
-  const hasAppIcon = appIcon.as((name) => name != "");
 
   return (
-    <box class="module" tooltipText="Focused Client" visible={hasAppIcon}>
+    <box class="module" tooltipText="Focused Client" visible={visible}>
       <Gtk.GestureClick
         button={3}
         onPressed={() => hyprland.dispatch("killactive", "")}
       />
-      <button onClicked={(self) => hyprland.focusedClient.focus()}>
+      <button
+        onClicked={(self) => {
+          print(focusedClientTitle.get());
+          hyprland.focusedClient.focus();
+        }}
+      >
         <box>
           <image iconName={appIcon} pixelSize={ICON_SIZE} />
-          <label label={focusedClientStr} />
+          <label label={focusedClientTitle} />
         </box>
       </button>
     </box>
