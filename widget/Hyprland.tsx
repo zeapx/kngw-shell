@@ -97,12 +97,11 @@ export function FocusedClient() {
       : title;
   });
 
-  const appIcon = focusedClient.as((client) => {
-    return resolveAppIcon(client);
-  });
+  const appIcon = focusedClient.as((client) => resolveAppIcon(client));
+  const hasAppIcon = appIcon.as((name) => name != "");
 
   return (
-    <box class="module" tooltipText="Focused Client">
+    <box class="module" tooltipText="Focused Client" visible={hasAppIcon}>
       <Gtk.GestureClick
         button={3}
         onPressed={() => hyprland.dispatch("killactive", "")}
@@ -118,10 +117,10 @@ export function FocusedClient() {
 }
 
 function resolveAppIcon(client: AstalHyprland.Client) {
-  if (!client) return "application-x-executable-symbolic";
+  if (!client) return "";
 
   const rawClass = client.initialClass || client.class || "";
-  if (!rawClass) return "application-x-executable-symbolic";
+  if (!rawClass) return "";
 
   const baseName = rawClass.toLowerCase().split(".").pop()!;
   const iconCandidates = [rawClass, baseName, `${baseName}-client`];
