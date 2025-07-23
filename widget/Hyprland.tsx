@@ -90,12 +90,12 @@ export function Workspaces() {
 
 export function FocusedClient() {
   const [focusedTitle, setFocusedTitle] = createState("");
+  const [focusedClass, setFocusedClass] = createState("");
 
   hyprland.connect("event", (_, event, data) => {
     if (event === "activewindow") {
-      hyprland.notify("focused-client");
-
-      const [_windowClass, title] = data.split(",");
+      const [windowClass, title] = data.split(",");
+      setFocusedClass(windowClass);
       setFocusedTitle(title);
     }
   });
@@ -108,7 +108,7 @@ export function FocusedClient() {
   });
 
   const visible = focusedTitle.as((title) => title != "");
-  const appIcon = focusedClient.as((client) => resolveAppIcon(client));
+  const appIcon = focusedClass.as((windowClass) => resolveAppIcon(windowClass));
 
   return (
     <box class="module" tooltipText="Focused Client" visible={visible}>
@@ -131,10 +131,8 @@ export function FocusedClient() {
   );
 }
 
-function resolveAppIcon(client: AstalHyprland.Client) {
-  if (!client) return "";
-
-  const rawClass = client.initialClass || client.class || "";
+function resolveAppIcon(windowClass: string) {
+  const rawClass = windowClass || "";
   if (!rawClass) return "";
 
   const baseName = rawClass.toLowerCase().split(".").pop()!;
