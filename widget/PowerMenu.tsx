@@ -1,5 +1,5 @@
 import { createState } from "ags";
-import { exec } from "ags/process";
+import { execAsync } from "ags/process";
 import Gtk from "gi://Gtk";
 import { ICON_SIZE } from "./Bar";
 
@@ -18,7 +18,7 @@ export function PowerMenu() {
         <box>
           <button
             tooltipText="Lock"
-            onClicked={() => exec("hyprctl dispatch exec hyprlock")}
+            onClicked={() => execAsync("hyprctl dispatch exec hyprlock")}
           >
             <image
               iconName="system-lock-screen-symbolic"
@@ -27,8 +27,10 @@ export function PowerMenu() {
           </button>
           <button
             tooltipText="Suspend"
-            onClicked={() =>
-              exec(["hyprctl dispatch exec hyprlock", "systemctl suspend"])
+            onClicked={() => {
+                execAsync("hyprctl dispatch exec hyprlock")
+                execAsync("systemctl suspend")
+              }
             }
           >
             <image
@@ -38,7 +40,7 @@ export function PowerMenu() {
           </button>
           <button
             tooltipText="Reboot"
-            onClicked={() => exec("systemctl reboot")}
+            onClicked={() => execAsync("systemctl reboot")}
           >
             <image iconName="system-reboot-symbolic" pixelSize={ICON_SIZE} />
           </button>
@@ -46,7 +48,7 @@ export function PowerMenu() {
       </revealer>
       <button
         tooltipText="Poweroff"
-        onClicked={() => exec("systemctl poweroff")}
+        onClicked={() => execAsync("systemctl poweroff")}
       >
         <image iconName="system-shutdown-symbolic" pixelSize={ICON_SIZE} />
       </button>
